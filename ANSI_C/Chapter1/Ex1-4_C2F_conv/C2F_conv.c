@@ -8,11 +8,11 @@ int main ()
 
     float fahr;
 
-    printf("C\tF\n");
+    printf("Celsius to Fahrenheit Converter\nC\tF\n");
 
-    for (float celsius = LOWER; celsius < UPPER; celsius += STEP)
+    for (float celsius = LOWER; celsius <= UPPER; celsius += STEP)
     {
-        fahr = (celsius * (9.0/5.0)) + 32.0;
+        fahr = celsius * (9.0/5.0) + 32.0;
         printf("%3.0f\t%6.1f\n", celsius, fahr);
     }
 

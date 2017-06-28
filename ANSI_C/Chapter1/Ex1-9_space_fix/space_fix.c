@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main()
+main()
 {
     #define R 1
     #define NR 0
@@ -47,5 +47,4 @@ int main()
             putchar(c);
         }
     }
-    return 0;
 }

@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int main ()
+main ()
 {
     #define LOWER 0
     #define UPPER 300
@@ -23,6 +23,4 @@ int main ()
         fahr = celsius * (9.0/5.0) + 32.0;
         printf("%3.0f\t%6.1f\n", celsius, fahr);
     }
-
-    return 0;
 }

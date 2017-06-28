@@ -2,7 +2,7 @@
 
 /* count blanks, tabs and newline charaters in input */
 
-int main()
+main()
 {
     int c;
     long s, t, n;
@@ -28,6 +28,4 @@ int main()
         }
     }
     printf("There are %ld spaces, %ld tabs and %ld newlines in 'c'.\n", s, t, n);
-
-    return 0;
 }

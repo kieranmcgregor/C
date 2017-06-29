@@ -2,7 +2,7 @@
 
 #define IN 1
 #define OUT 0
-#define LONGEST 51
+#define LONGEST 50
 #define NONZEROLEN 1
 
 int main()
@@ -28,7 +28,7 @@ int main()
         else if (c == ' ' || c == '\t' || c == '\n')
         {
             state = OUT;
-            hist[length]++;
+            hist[length - NONZEROLEN]++;
             length = 0;
         }
         else if (state == OUT)
@@ -42,11 +42,11 @@ int main()
         }
     }
 
-    for (i = NONZEROLEN; i < LONGEST; i++)
+    for (i = 0; i < LONGEST; i++)
     {
         if (hist[i] > 0)
         {
-            printf("%d - %d |", i, hist[i]);
+            printf("%2d - %2d |", (i + NONZEROLEN), hist[i]);
             for (j = NONZEROLEN; j <= hist[i]; j++)
             {
                 printf("=");

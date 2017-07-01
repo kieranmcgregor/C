@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-main()
+/**** REMEMBER: CTRL + D = EOF */
+int main()
 {
     int c;
 
@@ -8,13 +9,17 @@ main()
 
     while ((c = getchar ()) != EOF)
     {
-        if (c == '@')
-        {
-            break;
-        } else
+        if (c != '\n')
         {
             putchar(c);
         }
+        else
+        {
+            printf("\\n");
+        }
+        printf(": 'getchar != EOF' is %d\n", (c != EOF));
     }
     printf("'getchar != EOF' is %d\n", (c != EOF));
+
+    return 0;
 }

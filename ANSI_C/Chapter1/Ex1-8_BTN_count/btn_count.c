@@ -1,8 +1,8 @@
 #include <stdio.h>
 
+/**** REMEMBER: CTRL + D = EOF */
 /* count blanks, tabs and newline charaters in input */
-
-main()
+int main()
 {
     int c;
     long s, t, n;
@@ -22,10 +22,9 @@ main()
         } else if (c == '\n')
         {
             n++;
-        } else if (c == '@')
-        {
-            break;
         }
     }
     printf("There are %ld spaces, %ld tabs and %ld newlines in 'c'.\n", s, t, n);
+
+    return 0;
 }

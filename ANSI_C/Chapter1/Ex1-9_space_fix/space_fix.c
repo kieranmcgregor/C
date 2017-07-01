@@ -1,14 +1,14 @@
 #include <stdio.h>
 
-main()
+/**** REMEMBER: CTRL + D = EOF */
+#define R 1
+#define NR 0
+
+// find and replace multiple spaces (' ') with single space (' ')
+int main()
 {
-    #define R 1
-    #define NR 0
-    #define QUIT 4
 
-    int c, repeat, quit;
-
-    quit = 0;
+    int c, repeat;
 
     repeat = NR;
 
@@ -30,21 +30,9 @@ main()
             {
                 repeat = NR;
             }
-
-            if (c == '@')
-            {
-                quit++;
-                if (quit == QUIT)
-                {
-                    printf("\n");
-                    break;
-                }
-            }
-            else
-            {
-                quit = 0;
-            }
             putchar(c);
         }
     }
+
+    return 0;
 }

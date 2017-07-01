@@ -1,10 +1,10 @@
 #include <stdio.h>
 
+/**** REMEMBER: CTRL + D = EOF */
 #define IN 1
 #define OUT 0
 
 /* count lines, words and characters in input */
-
 int main()
 {
     int c, nl, nw, nc, state;
@@ -12,14 +12,11 @@ int main()
     state = OUT;
     nl = nw = nc = 0;
 
+    printf("Please enter a string:\n");
+
     while ((c = getchar()) != EOF)
     {
         nc++;
-
-        if (c == '@')
-        {
-            break;
-        }
 
         if (c == '\n')
         {

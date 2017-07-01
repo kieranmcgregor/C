@@ -1,10 +1,13 @@
 #include <stdio.h>
 
-// ' ' = 32 to '~' = 126
+/**** REMEMBER: CTRL + D = EOF */
 #define SPACE 32
 #define TILDE 126
 #define CHARANG (TILDE - SPACE)
 
+/* display character occurence histogram for a user defined input
+for all characters */
+// ' ' = 32 to '~' = 126
 int main()
 {
     int c, i, j, quit;
@@ -15,16 +18,11 @@ int main()
         hist[i] = 0;
     }
 
+    printf("Please enter a string:\n");
+
     while ((c = getchar()) != EOF)
     {
-        if (c == '@')
-        {
-            break;
-        }
-        else
-        {
-            hist[c - SPACE]++;
-        }
+        hist[c - SPACE]++;
     }
 
     for (i = 0; i < CHARANG; i++)

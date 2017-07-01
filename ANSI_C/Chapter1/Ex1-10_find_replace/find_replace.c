@@ -1,6 +1,8 @@
 #include <stdio.h>
 
-main()
+/**** REMEMBER: CTRL + D = EOF */
+// find and replace white space with escape character
+int main()
 {
     int c;
 
@@ -21,13 +23,11 @@ main()
             printf("\\\\");
 
         }
-        else if (c == '@')
-        {
-            break;
-        }
         else
         {
             putchar(c);
         }
     }
+
+    return 0;
 }

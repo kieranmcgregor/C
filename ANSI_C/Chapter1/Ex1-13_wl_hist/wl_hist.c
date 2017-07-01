@@ -1,10 +1,12 @@
 #include <stdio.h>
 
+/**** REMEMBER: CTRL + D = EOF */
 #define IN 1
 #define OUT 0
 #define LONGEST 50
 #define NONZEROLEN 1
 
+// display horizontal histogram of word length frequency
 int main()
 {
     int c, i, j, length, state;
@@ -19,13 +21,11 @@ int main()
         // printf("%d", hist);
     }
 
+    printf("Please enter a string:\n");
+
     while ((c = getchar()) != EOF)
     {
-        if (c == '@')
-        {
-            break;
-        }
-        else if (c == ' ' || c == '\t' || c == '\n')
+        if (c == ' ' || c == '\t' || c == '\n')
         {
             state = OUT;
             hist[length - NONZEROLEN]++;

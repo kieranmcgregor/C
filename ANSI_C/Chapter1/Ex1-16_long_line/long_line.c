@@ -17,7 +17,7 @@ int main()
     max = 0;
 
     printf("Please enter a string:\n");
-    
+
     while ((len = get_line(line, MAXLINE)) > 0)
     {
         if (len > max)
@@ -29,7 +29,7 @@ int main()
 
     if (max > 0) // there was a line
     {
-        printf("%s", longest);
+        printf("%d\n%s", max, longest);
     }
     return 0;
 }
@@ -49,6 +49,7 @@ int get_line(char s[], int lim)
         i++;
     }
     s[i] = '\0';
+
     return i;
 }
 

@@ -56,6 +56,14 @@ int get_line(char line[], int lim)
         {
             if (c != '\t')
             {
+                while (spc_i > TABSPACE)
+                {
+                    line[i] = '\t';
+                    i++;
+                    col += TABSPACE;
+                    spc_i -= TABSPACE;
+                }
+
                 if (((col + spc_i) % TABSPACE) == 0)
                 {
                     line[i] = '\t';

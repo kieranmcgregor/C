@@ -1,5 +1,18 @@
 // test line 1: hello	this	is    a    test
 // test line 2: hello  	this  	is another	test
+// test line 3: 12345678                this is 16 spaces after 8 characters
+// test line 4: 12345678               this is 15 spaces after 8 characters
+// test line 5: 12345678         this is 9 spaces after 8 characters
+
+/* This program provides preference to tabs in the case of a single space that
+would reach a tabstop. To change this behaviour to provide preference solely
+to single spaces change line 77 from:
+
+if (((col + spc_i) % TABSPACE) == 0)
+
+to:
+
+if ((spc_i > 1) && (((col + spc_i) % TABSPACE) == 0)) */
 
 #include <stdio.h>
 
@@ -43,14 +56,11 @@ int get_line(char line[], int lim)
 
     for (i = 0; ((c = getchar()) != EOF) && (c != '\n') && (i != lim); i++)
     {
-        // printf("for: %c %d - %s\n", c, i, line);
         if (c == ' ')
         {
-            // printf("if-b4: %c %d - %s\n", c, i, line);
             spaces[spc_i] = c;
             spc_i++;
             i--;
-            // printf("if-aft: %c %d - %s\n", c, i, line);
         }
         else if (spc_i > 0)
         {
@@ -81,13 +91,11 @@ int get_line(char line[], int lim)
 
             line[i] = c;
 
-            col += spc_i;
+            col += (spc_i + 1);
             spc_i = 0;
-            // printf("elif: %c %d - %s\n", c, i, line);
         }
         else
         {
-            // printf("else: %c %d - %s\n", c, i, line);
             line[i] = c;
             col++;
         }
@@ -101,8 +109,6 @@ int get_line(char line[], int lim)
     }
 
     line[i] = '\0';
-
-    printf("%d %d\n%s\n", col, i, line);
 
     return i;
 }

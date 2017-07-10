@@ -49,7 +49,7 @@ int get_line(char line[], int lim)
     int c, i;
     int spc_i; // spaces index
     int col; // current column position
-    char spaces[MAXLINE];
+    char spaces[MAXLINE]; // current string of white space
 
     col = 0;
     spc_i = 0;

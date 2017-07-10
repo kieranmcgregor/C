@@ -12,7 +12,7 @@ int clean_comments(char clean_line[], char line[], int len, int state);
 
 int main()
 {
-    int state;
+    int i, state;
     int len; // length of line
     char line[MAXLINE]; // current line
     char clean_line[MAXLINE];
@@ -22,7 +22,17 @@ int main()
     while ((len = get_line(line, MAXLINE)) > 0)
     {
         state = clean_comments(clean_line, line, len, state);
-        printf("%d\n%s", len, clean_line);
+
+        printf("%s", clean_line);
+        
+        for (i = 0; i < MAXLINE; i++)
+        {
+            while (clean_line[i] != '\0')
+            {
+                clean_line[i] = '\0';
+            }
+            i = MAXLINE;
+        }
     }
 
     return 0;
@@ -50,9 +60,10 @@ int get_line(char line[], int lim)
 
 int clean_comments(char clean_line[], char line[], int len, int state)
 {
-    int i, com_i;
+    int i, clean_i, com_i;
     char com_sign[COMTYPE];
 
+    clean_i = 0;
     com_i = 0;
 
     for (i = 0; i < len; i++)
@@ -63,17 +74,25 @@ int clean_comments(char clean_line[], char line[], int len, int state)
             {
                 if (line[i] == '/')
                 {
+                    com_sign[com_i] = line[i];
                     com_i++;
                 }
                 else if (line[i] == '*' && com_i > 0)
                 {
+                    com_sign[com_i] = line[i];
                     state = IN;
                     com_i++;
                 }
                 else
                 {
-                    clean_line[i] = line[i];
-                    com_i = 0;
+                    if (com_i == 1)
+                    {
+                        clean_line[clean_i] = com_sign[com_i - 1];
+                        com_i = 0;
+                        clean_i++;
+                    }
+                    clean_line[clean_i] = line[i];
+                    clean_i++;
                 }
             }
         }
@@ -95,5 +114,8 @@ int clean_comments(char clean_line[], char line[], int len, int state)
         }
 
     }
+
+    clean_line[clean_i] = '\0';
+
     return state;
 }

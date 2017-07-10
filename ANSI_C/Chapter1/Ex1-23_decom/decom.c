@@ -57,11 +57,43 @@ int clean_comments(char clean_line[], char line[], int len, int state)
 
     for (i = 0; i < len; i++)
     {
-        if ((line[i] == '/' || ((com_sign > 0) && (line[i] == '*'))) && state == OUT)
+        if (state == OUT)
         {
-            com_sign[com_i] = line[i];
-            com_i++;
+            if (com_i >= 0 && com_i < 2)
+            {
+                if (line[i] == '/')
+                {
+                    com_i++;
+                }
+                else if (line[i] == '*' && com_i > 0)
+                {
+                    state = IN;
+                    com_i++;
+                }
+                else
+                {
+                    clean_line[i] = line[i];
+                    com_i = 0;
+                }
+            }
         }
+        else
+        {
+            if (line[i] == '*' && com_i > 1)
+            {
+                com_i--;
+            }
+            else if (line[i] == '/' && com_i < 2)
+            {
+                state = OUT;
+                com_i--;
+            }
+            else if (line[i] != '*' && com_i < 2)
+            {
+                com_i++;
+            }
+        }
+
     }
-    return 0;
+    return state;
 }

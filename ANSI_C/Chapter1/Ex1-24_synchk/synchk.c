@@ -3,12 +3,13 @@
 // Test 3: {{this is in correct braces}
 // Test 4: 'this is in single quotes''
 // Test 5: ""this is outside double quote"
-// Test 6: 'hello \t tab \l invalid at i=13 \ooo octal \xhh hex \xhy invalid at i=52'
+// Test 6: 'hello \t tab \l invalid at i=14 \ooo octal \xhh hex \xhy invalid at i=53'
 // Test 7: this is a test (([{)'"\y
 // Test 8: (([{)\y'"
 // Test 9: "( this is not an error"
-// Test 10: '"( this is a double quote error'
-// Test 11: "\" no error " quote error"
+// Test 10: '"( this is not an error'
+// Test 11: "') this is not an error"
+// Test 11: "\" no error " double quote error"
 
 #include <stdio.h>
 /* checks for basis syntax (i.e. unbalanced brackets, braces & parentheses,
@@ -20,12 +21,11 @@ quotes, both single and double, excape sequences and comments) in a C program */
 #define OUT -1
 
 int get_line(char line[], int lim);
+int quoted_checker(char prior, int state);
 void par_checker(char line[], int len);
 void bck_checker(char line[], int len);
 void brc_checker(char line[], int len);
-void squo_checker(char line[], int len);
-void dquo_checker(char line[], int len);
-int quoted_checker(char prior, int state);
+void quote_checker(char line[], int len);
 void escape_checker(char line[], int len);
 
 int main()
@@ -45,8 +45,7 @@ int main()
         par_checker(line, len);
         bck_checker(line, len);
         brc_checker(line, len);
-        squo_checker(line, len);
-        dquo_checker(line, len);
+        quote_checker(line, len);
         escape_checker(line, len);
 
         line_num++;
@@ -73,6 +72,16 @@ int get_line(char line[], int lim)
     line[i] = '\0';
 
     return i;
+}
+
+int quoted_checker(char prior, int state)
+{
+    if (prior != '\\')
+    {
+        state = -state;
+    }
+
+    return state;
 }
 
 void par_checker(char line[], int len)
@@ -278,38 +287,52 @@ void brc_checker(char line[], int len)
     }
 }
 
-void squo_checker(char line[], int len)
+void quote_checker(char line[], int len)
 {
-    int i, slen, state;
+    int i, slen, dlen, state;
     int sing_quo[MAXLINE]; // single quotes ' in current line
+    int doub_quo[MAXLINE]; // double quotes " in current line
 
     slen = 0;
+    dlen = 0;
 
     state = OUT;
 
     for (i = 0; i < len; i++)
     {
-        if (line[i] == '\"')
+        if (line[i] == '\'' && state == OUT)
         {
-            state = quoted_checker(line[i - 1], state);
+            state = IN;
+            sing_quo[slen] = i;
+            slen++;
         }
-
-        if (state == OUT)
+        else if (line[i] == '\"' && state == OUT)
         {
-            if (line[i] == '\'')
+            state = IN;
+            doub_quo[dlen] = i;
+            dlen++;
+        }
+        else if (line[i] == '\'' && state == IN)
+        {
+            if (slen > 0)
             {
-                if (line[i - 1] != '\\')
+                state = quoted_checker(line[i - 1], state);
+                if (state == OUT)
                 {
-                    if (slen > 0)
-                    {
-                        slen--;
-                        sing_quo[slen] = '\0';
-                    }
-                    else
-                    {
-                        sing_quo[slen] = i;
-                        slen++;
-                    }
+                    slen--;
+                    sing_quo[slen] = '\0';
+                }
+            }
+        }
+        else if (line[i] == '\"' && state == IN)
+        {
+            if (dlen > 0)
+            {
+                state = quoted_checker(line[i - 1], state);
+                if (state == OUT)
+                {
+                    dlen--;
+                    doub_quo[dlen] = '\0';
                 }
             }
         }
@@ -317,73 +340,22 @@ void squo_checker(char line[], int len)
 
     if (slen > 0)
     {
-        printf("ERROR: ");
-        printf("Uneven single quotes remain at index:\n");
+        printf("ERROR: Uneven single quotes remain at index:\n");
         for (i = 0; i < slen; i++)
         {
             printf("%d", sing_quo[i]);
         }
         printf("\n");
     }
-}
-
-void dquo_checker(char line[], int len)
-{
-    int i, dlen, state;
-    int doub_quo[MAXLINE]; // double quotes " in current line
-
-    dlen = 0;
-
-    state = OUT;
-
-    for (i = 0; i < len; i++)
+    else if (dlen > 0)
     {
-        if (line[i] == '\'')
-        {
-            state = quoted_checker(line[i - 1], state);
-        }
-
-        if (state == OUT)
-        {
-            if (line[i] == '\"')
-            {
-                if (line[i - 1] != '\\')
-                {
-                    if (dlen > 0)
-                    {
-                        dlen--;
-                        doub_quo[dlen] = '\0';
-                    }
-                    else
-                    {
-                        doub_quo[dlen] = i;
-                        dlen++;
-                    }
-                }
-            }
-        }
-    }
-
-    if (dlen > 0)
-    {
-        printf("ERROR: ");
-        printf("Uneven double quotes remain at index:\n");
+        printf("ERROR: Uneven double quotes remain at index:\n");
         for (i = 0; i < dlen; i++)
         {
             printf("%d", doub_quo[i]);
         }
         printf("\n");
     }
-}
-
-int quoted_checker(char prior, int state)
-{
-    if (prior != '\\')
-    {
-        state = -state;
-    }
-
-    return state;
 }
 
 void escape_checker(char line[], int len)
@@ -442,8 +414,8 @@ void escape_checker(char line[], int len)
             else if (esc_char > 0)
             {
                 if ((let != 'n') && (let != 't') && (let != 'v') && (let != 'b') && (let != 'r') &&
-                    (let != 'f') && (let != 'a') && (let != '\\') && (let != '?') && (let != '\'') &&
-                    (let != '\"') && (let != 'o') && (let != 'x'))
+                    (let != 'f') && (let != 'a') && (let != '\\') && (let != '?') && (let != '\'')
+                    && (let != '\"') && (let != 'o') && (let != 'x'))
                 {
                     esc_seq[elen] = (i - esc_char);
                     elen++;
@@ -463,12 +435,19 @@ void escape_checker(char line[], int len)
                 esc_char = 0;
             }
         }
+        else
+        {
+            if (line[i] == '\\')
+            {
+                esc_seq[elen] = i;
+                elen++;
+            }
+        }
     }
 
     if (elen > 0)
     {
-        printf("ERROR: ");
-        printf("Invalid escape sequence at indeces:\n");
+        printf("ERROR: Invalid escape sequence at indeces:\n");
         for (i = 0; i < elen; i++)
         {
             printf("%d ", esc_seq[i]);

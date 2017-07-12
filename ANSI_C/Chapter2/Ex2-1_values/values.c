@@ -1,21 +1,25 @@
 #include <stdio.h>
 
 void calculate_char(char c);
-void calculate_int(int i);
+long long power(int base, int exp);
 
 int main()
 {
     char c;
     signed char sc;
-    short int s;
-    unsigned short int us;
+    short s;
+    unsigned short us;
     int i;
     unsigned int ui;
-    long int l;
-    unsigned long int ul;
+    long long l;
+    unsigned long long ul;
 
-    c = sc = '1';
-    s = us = i = ui = l = ul = 1;
+    long long temp_l;
+    int idx, temp_i;
+
+    s = sc = 1;
+    i = l = us = ui = ul = 1;
+    temp_i = temp_l = 0;
 
     printf("Let's go!\nchar:\n");
     calculate_char(c);
@@ -23,17 +27,52 @@ int main()
     calculate_char(sc);
 
     printf("short int:\n");
-    calculate_int(s);
-    printf("unsigned short int:\n");
-    calculate_int(us);
+    for (idx = 1; s > 0; idx++)
+    {
+        temp_i = s = ((power(2, idx) / 2) - 1);
+        s++;
+    }
+    printf("%d %d %d\n", s, (idx - 1), temp_i);
+
     printf("int:\n");
-    calculate_int(i);
-    printf("unsigned int:\n");
-    calculate_int(ui);
+    for (idx = 1; i > 0; idx++)
+    {
+        temp_i = i = ((power(2, idx) / 2) - 1);
+        i++;
+    }
+    printf("%d %d %d\n", i, (idx - 1), temp_i);
+
     printf("long int:\n");
-    calculate_int(l);
+    for (idx = 1; l > 0; idx++)
+    {
+        temp_l = l = ((power(2, idx) / 2) - 1);
+        l++;
+    }
+    printf("%lld %d %lld\n", l, (idx - 1), temp_l);
+
+    printf("unsigned short int:\n");
+    for (idx = 1; us > 0; idx++)
+    {
+        temp_i = us = (power(2, idx) - 1);
+        us++;
+    }
+    printf("%u %d %u\n", us, (idx - 1), temp_i);
+
+    printf("unsigned int:\n");
+    for (idx = 1; ui > 0; idx++)
+    {
+        temp_i = ui = (power(2, idx) - 1);
+        ui++;
+    }
+    printf("%u %d %u\n", ui, (idx - 1), temp_i);
+
     printf("unsigned long int:\n");
-    calculate_int(ul);
+    for (idx = 1; ul > 0; idx++)
+    {
+        temp_l = ul = (power(2, idx) - 1);
+        ul++;
+    }
+    printf("%llu %d %llu\n", ul, (idx - 1), temp_l);
 }
 
 void calculate_char(char c)
@@ -45,11 +84,14 @@ void calculate_char(char c)
     printf("%c %c\n", c, (c - 1));
 }
 
-void calculate_int(int i)
+long long power(int base, int exponent)
 {
-    while (i > 0)
+    if (exponent == 0)
     {
-        i++;
+        return 1;
     }
-    printf("%d %d\n", i, (i - 1));
+    else
+    {
+        return (base * power(base, (exponent - 1)));
+    }
 }

@@ -24,26 +24,26 @@ int main()
     printf("Let's go!\n\nchar:\n");
     for (idx = 1; c > 0; idx++)
     {
-        temp_c = c = power(2, idx) - 1;
+        temp_c = c = (power(2, idx)/2) - 1;
         c++;
     }
-    printf("%d bits with range\n%d to %d\n\n", idx, c, temp_c);
+    printf("%d bits with range\n%d to %d\n\n", (idx - 1), c, temp_c);
 
     printf("short int:\n");
     for (idx = 1; s > 0; idx++)
     {
-        temp_i = s = power(2, idx) - 1;
+        temp_i = s = (power(2, idx)/2) - 1;
         s++;
     }
-    printf("%d bits with range\n%d to %d\n\n", idx, s, temp_i);
+    printf("%d bits with range\n%d to %d\n\n", (idx - 1), s, temp_i);
 
     printf("int:\n");
     for (idx = 1; i > 0; idx++)
     {
-        temp_i = i = power(2, idx) - 1;
+        temp_i = i = (power(2, idx)/2) - 1;
         i++;
     }
-    printf("%d bits with range\n%d to %d\n\n", idx, i, temp_i);
+    printf("%d bits with range\n%d to %d\n\n", (idx - 1), i, temp_i);
 
 
     printf("long int:\n");

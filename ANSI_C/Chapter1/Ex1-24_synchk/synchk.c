@@ -18,7 +18,7 @@ quotes, both single and double, excape sequences and comments) in a C program */
 /**** REMEMBER: CTRL + D = EOF */
 #define MAXLINE 1000
 #define IN 1
-#define OUT -1
+#define OUT 0
 
 int get_line(char line[], int lim);
 int quoted_checker(char prior, int state);
@@ -40,7 +40,7 @@ int main()
 
     while ((len = get_line(line, MAXLINE)) > 0)
     {
-        printf("Line: %d\n%s", line_num, line);
+        printf("Line: %d) %s", line_num, line);
 
         par_checker(line, len);
         bck_checker(line, len);
@@ -78,7 +78,7 @@ int quoted_checker(char prior, int state)
 {
     if (prior != '\\')
     {
-        state = -state;
+        state = !state;
     }
 
     return state;

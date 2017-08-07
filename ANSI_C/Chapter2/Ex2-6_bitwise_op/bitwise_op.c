@@ -16,8 +16,9 @@ int main()
     int len; // length of current line
     int numbers[MAXIN]; // numbers in current line
 
-    printf("Please enter an integer value 'x' for setting, the start position 'p' (0 - 3, right to left),\n");
-    printf("the number of bits 'n' and an integer value 'y' for getting all separated by spaces:\n*Press 'CTRL + d' to exit*\n");
+    printf("Please enter an integer value 'x' for setting, the start position 'p'\n");
+    printf("(0 - 3, right to left), the number of bits 'n' and an integer value 'y'\n");
+    printf("for getting all separated by spaces:\n*Press 'CTRL + d' to exit*\n");
 
     while ((len = get_line(line, MAXLINE)) > 0)
     {
@@ -26,7 +27,10 @@ int main()
         get_values(numbers, line, len);
 
         answer = getbits(numbers[0], numbers[1], numbers[2], numbers[3]);
-        printf("%d\n", answer);
+        printf("%d\n\n", answer);
+        printf("Please enter an integer value 'x' for setting, the start position 'p'\n");
+        printf("(0 - 3, right to left), the number of bits 'n' and an integer value 'y'\n");
+        printf("for getting all separated by spaces:\n*Press 'CTRL + d' to exit*\n");
     }
     return 0;
 }
@@ -108,6 +112,12 @@ void get_values(int numbers[], char line[], int len)
 
 unsigned getbits(unsigned x, int p, int n, unsigned y)
 {
+    unsigned z;
+    unsigned mask;
+
+    z = x;
+    mask = 0;
+
     if (p < 0)
     {
         p = 0;
@@ -130,13 +140,35 @@ unsigned getbits(unsigned x, int p, int n, unsigned y)
         printf("Value for 'n' greater than 4, n equals %d\n", n);
     }
 
-    printf("\nx = %d, p = %d, n = %d, y = %d\n", x, p, n, y);
+    printf("x = %d, p = %d, n = %d, y = %d\n", x, p, n, y);
 
-    l_shift = (4 - n);
-    r_shift = (3 - p);
+    if (n < (p + 1))
+    {
+        // printf("0. %d\n", mask);
+        mask = ~(~mask << n);
+        // printf("1. %d\n", mask);
+        mask = ~(mask << ((p + 1) - n));
+        // printf("2. %d\n", mask);
+        x = x & mask;
+        // printf("3. %d\n", x);
 
-    y << l_shift;
-    y >> r_shift;
+        mask = 0;
+        // printf("4. %d\n", mask);
+        mask = ~(~mask << n);
+        // printf("5. %d\n", mask);
+        z = y & mask;
+        // printf("6. %d\n", z);
+        z = z << ((p + 1) - n);
+        // printf("7. %d\n", z);
 
-    return (x >> ((p + 1) - n)) & ~(~0 << n);
+        x = x | z;
+        // printf("8. %d\n", x);
+
+        return x;
+    }
+    else
+    {
+        printf("Invalid entry, 'n' cannot be larger than 'p + 1'.\n");
+        return 0;
+    }
 }

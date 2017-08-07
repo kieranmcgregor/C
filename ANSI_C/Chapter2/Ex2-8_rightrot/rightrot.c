@@ -7,7 +7,7 @@
 
 int get_line(char line[], int lim);
 void get_values(int numbers[], char line[], int len);
-unsigned invert(unsigned x, int p, int n);
+unsigned rightrot(unsigned x, int n);
 
 int main()
 {
@@ -25,7 +25,7 @@ int main()
         printf("%d, %s", len, line);
 
         get_values(numbers, line, len);
-        answer = invert(numbers[0], numbers[1], numbers[2]);
+        answer = rightrot(numbers[0], numbers[1]);
         printf("%d\n\n", answer);
         printf("Please enter an integer value 'x' for setting, the start position 'p'\n");
         printf("(0 - 3, right to left), the number of bits 'n' and an integer value 'y'\n");
@@ -121,23 +121,8 @@ void get_values(int numbers[], char line[], int len)
     }
 }
 
-unsigned invert(unsigned x, int p, int n)
+unsigned rightrot(unsigned x, int n)
 {
-    unsigned mask;
-
-    mask = 0;
-
-    if (p < 0)
-    {
-        p = 0;
-        printf("Value for 'p' less than 0, p set to %d\n", p);
-    }
-    else if (p > 3)
-    {
-        p = p % 4;
-        printf("Value for 'p' greater than 3, p set to %d\n", p);
-    }
-
     if (n < 1)
     {
         n = 1;
@@ -149,15 +134,7 @@ unsigned invert(unsigned x, int p, int n)
         printf("Value for 'n' greater than 4, n set to %d\n", n);
     }
 
-    printf("x = %d, p = %d, n = %d\n", x, p, n);
+    printf("x = %d, n = %d\n", x, n);
 
-    if (n <= (p + 1))
-    {
-        return x ^ ((~(~mask << n)) << ((p + 1) - n));
-    }
-    else
-    {
-        printf("ERROR: Invalid entry, 'n' cannot be larger than 'p + 1'.\n");
-        return 0;
-    }
+    return (x >> n) | ((x & ~(~mask << n)) << (4 - n));
 }

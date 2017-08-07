@@ -2,36 +2,36 @@
 #include <math.h>
 
 #define MAXLINE 1000
-#define MAXIN 4
+#define MAXIN 3
+#define GTZ 0
 
-int get_line(char line [], int lim);
+int get_line(char line[], int lim);
 void get_values(int numbers[], char line[], int len);
-unsigned getbits(unsigned x, int p, int n, unsigned y);
+unsigned invert(unsigned x, int p, int y);
 
 int main()
 {
-    int i;
-    unsigned int answer;
-    char line[MAXLINE]; // current line
     int len; // length of current line
-    int numbers[MAXIN]; // numbers in current line
+    char line[MAXLINE]; // current line
+    int numbers[MAXIN]; // current input values
+    unsigned answer;
 
-    printf("Please enter an integer value 'x' for setting, the start position 'p'\n");
-    printf("(0 - 3, right to left), the number of bits 'n' and an integer value 'y'\n");
-    printf("for getting all separated by spaces:\n*Press 'CTRL + d' to exit*\n");
+    printf("Please enter an integer value, 'x', to be inverted, the start position\n");
+    printf("(0 - 3, right to left), 'p' and the number of bits, 'n', for inversion,\n");
+    printf("separated by spaces:\n*Press 'CTRL + d' to exit*\n");
 
     while ((len = get_line(line, MAXLINE)) > 0)
     {
         printf("%d, %s", len, line);
 
         get_values(numbers, line, len);
-
-        answer = getbits(numbers[0], numbers[1], numbers[2], numbers[3]);
+        answer = invert(numbers[0], numbers[1], numbers[2]);
         printf("%d\n\n", answer);
         printf("Please enter an integer value 'x' for setting, the start position 'p'\n");
         printf("(0 - 3, right to left), the number of bits 'n' and an integer value 'y'\n");
         printf("for getting all separated by spaces:\n*Press 'CTRL + d' to exit*\n");
     }
+
     return 0;
 }
 
@@ -39,29 +39,30 @@ int get_line(char line[], int lim)
 {
     int i, c;
 
-    for (i = 0; i < (lim + 1) && (c = getchar()) != '\n' && c != EOF; i++)
+    for (i = 0; (i < (lim + 1)) && ((c = getchar()) != EOF) && (c != '\n'); i++)
     {
         line[i] = c;
     }
 
     if (c == '\n')
     {
-        line[i] = c;
-        i++;
+        line[i++] = c;
     }
 
-    line[i] = c;
+    line[i] = '\0';
 
     return i;
 }
 
 void get_values(int numbers[], char line[], int len)
 {
-    int i, j, nums_i, num_i, c;
+    int i, j, nums_i, num_i;
     int num;
-    int base = 10;
     int value, exponent;
     int number[MAXLINE];
+
+    int sign = GTZ;
+    int base = 10;
 
     nums_i = 0;
     num_i = 0;
@@ -75,6 +76,10 @@ void get_values(int numbers[], char line[], int len)
             num = line[i] - '0';
             number[num_i++] = num;
         }
+        else if (line[i] == '-')
+        {
+            sign = !GTZ;
+        }
         else
         {
             for (j = 0; j < num_i; j++)
@@ -84,6 +89,12 @@ void get_values(int numbers[], char line[], int len)
                 number[j] = '\0';
             }
 
+            if (sign)
+            {
+                value = -value;
+                sign = GTZ;
+            }
+
             if (nums_i < MAXIN)
             {
                 numbers[nums_i++] = value;
@@ -91,7 +102,7 @@ void get_values(int numbers[], char line[], int len)
             }
             else
             {
-                printf("Too many inputs, accepting first four values ");
+                printf("Too many inputs, accepting first %d values ", MAXIN);
 
                 for (j = 0; j < MAXIN; j++)
                 {
@@ -110,65 +121,51 @@ void get_values(int numbers[], char line[], int len)
     }
 }
 
-unsigned getbits(unsigned x, int p, int n, unsigned y)
+unsigned invert(unsigned x, int p, int n)
 {
-    unsigned z;
     unsigned mask;
 
-    z = x;
     mask = 0;
 
     if (p < 0)
     {
         p = 0;
-        printf("Value for 'p' less than 0, p equals %d\n", p);
+        printf("Value for 'p' less than 0, p set to %d\n", p);
     }
     else if (p > 3)
     {
         p = p % 4;
-        printf("Value for 'p' greater than 3, p equals %d\n", p);
+        printf("Value for 'p' greater than 3, p set to %d\n", p);
     }
 
     if (n < 1)
     {
         n = 1;
-        printf("Value for 'n' less than 1, n equals %d\n", n);
+        printf("Value for 'n' less than 1, n set to %d\n", n);
     }
     else if (n > 4)
     {
         n = ((n - 1) % 4) + 1;
-        printf("Value for 'n' greater than 4, n equals %d\n", n);
+        printf("Value for 'n' greater than 4, n set to %d\n", n);
     }
 
-    printf("x = %d, p = %d, n = %d, y = %d\n", x, p, n, y);
+    printf("x = %d, p = %d, n = %d\n", x, p, n);
 
-    if (n < (p + 1))
+    if (n <= (p + 1))
     {
-        // printf("0. %d\n", mask);
+        printf("0. %d\n", mask);
         mask = ~(~mask << n);
-        // printf("1. %d\n", mask);
-        mask = ~(mask << ((p + 1) - n));
-        // printf("2. %d\n", mask);
-        x = x & mask;
-        // printf("3. %d\n", x);
-
-        mask = 0;
-        // printf("4. %d\n", mask);
-        mask = ~(~mask << n);
-        // printf("5. %d\n", mask);
-        z = y & mask;
-        // printf("6. %d\n", z);
-        z = z << ((p + 1) - n);
-        // printf("7. %d\n", z);
-
-        x = x | z;
-        // printf("8. %d\n", x);
+        printf("1. %d\n", mask);
+        mask = mask << ((p + 1) - n);
+        printf("2. %d\n", mask);
+        x = x ^ mask;
+        printf("3. %d\n", x);
 
         return x;
     }
     else
     {
-        printf("Invalid entry, 'n' cannot be larger than 'p + 1'.\n");
+        printf("ERROR: Invalid entry, 'n' cannot be larger than 'p + 1'.\n");
         return 0;
     }
 }
